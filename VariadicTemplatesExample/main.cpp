@@ -10,12 +10,10 @@
 #include <iostream>
 
 template<typename ... Args> // Variadic template
-class Process : public Args... // Class inherits from all template parameters. 
+class MultiStage : public Args... // Class inherits from all template parameters.
 {
 public:
-    
-    void run()
-    {
+    void run(){
         (Args::process(), ...); // Fold expression, requires C++17.
     }
 };
@@ -31,30 +29,24 @@ struct Stage2 {
     }
 };
 struct Stage3 {
-    
     std::string parameter;
-    
-    void Filter3_Setup(const std::string& _parameter)
-    {
+    void Stage3_Setup(const std::string& _parameter) {
         parameter = _parameter;
     }
-    
     void process() {
         std::cout << "STAGE 3 (" << parameter << ")" << std::endl;
     }
 };
 
-Process<Stage1,Stage2> process1;
-Process<Stage1,Stage2,Stage3> process2;
+MultiStage<Stage1,Stage2> process1;
+MultiStage<Stage1,Stage2,Stage3> process2;
 
 int main() {
 
     std::cout << "** PROCESS 1: " << std::endl;
     process1.run();
-    
-    std::cout << '\n';
-    std::cout << "** PROCESS 2: " << std::endl;
-    process2.Filter3_Setup("this works!");
+    std::cout << std::endl << "** PROCESS 2: " << std::endl;
+    process2.Stage3_Setup("Initial value");
     process2.run();
 
 }
